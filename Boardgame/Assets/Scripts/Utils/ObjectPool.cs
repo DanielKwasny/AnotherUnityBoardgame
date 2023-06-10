@@ -17,6 +17,8 @@ public class ObjectPool : MonoBehaviour
     [SerializeField]
     bool _wrapAround = false;
 
+    public int CurrentObjectCount => _currentObjIndex + 1;
+
     // Start is called before the first frame update
     void Awake()
     {

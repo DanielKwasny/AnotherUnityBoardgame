@@ -1,0 +1,118 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Events;
+
+public class GameManager : Singleton<GameManager>
+{
+    int _currentPlayerIndex = 0;
+
+    [SerializeField]
+    MouseBehaviour _mouseBehaviour;
+
+    bool[] _playersIgnoreWalls = new bool[2] { false, false };
+
+    bool[] _playersDoubleRoll = new bool[2] { false, false };
+
+    bool[] _playersMax3Move = new bool[2] { false, false };
+
+    bool[] _playersMissTurn = new bool[2] { false, false };
+
+    public UnityEvent<int> OnRolledDice;
+
+    public UnityEvent OnActivateRoute;
+
+    public UnityEvent OnNewTurnStart;
+
+    UnityEvent[] PendingEventsForPlayers = new UnityEvent[2];
+    // Start is called before the first frame update
+    void Start()
+    {
+        PlayerManager.Instance.OnOneTileMovedEvent.AddListener(AfterOneTileMoved);
+        PlayerManager.Instance.OnPathEndedEvent.AddListener(AfterPlayerPathEnded);
+        _mouseBehaviour.SetStartPos(PlayerManager.Instance.PlayerControllers[0].transform.position);
+        PlayerManager.Instance.PrepareCurrentPlayer();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+
+    public void ChangePlayerTurn()
+    {
+        _currentPlayerIndex = (_currentPlayerIndex + 1) % 2;
+        PlayerManager.Instance.SetCurrentPlayer(_currentPlayerIndex);
+        PendingEventsForPlayers[_currentPlayerIndex]?.Invoke();
+    }
+
+    public void MoveActivePlayerOnRoute()
+    {
+        List<Vector3> routeToMove = _mouseBehaviour.FieldsCurrentlySelected;
+        if (routeToMove.Count == 0) return;
+
+        PlayerManager.Instance.SetPathForCurrentPlayer(routeToMove);
+        OnActivateRoute.Invoke();
+    } 
+
+    public void RollDice()
+    {
+        int maxRoll = 6;
+        if (_playersMax3Move[_currentPlayerIndex]) maxRoll = 3;
+
+        int rollResult = Random.Range(1, maxRoll+1);
+        OnRolledDice.Invoke(rollResult);
+        _mouseBehaviour.SetMaxCellsThisTurn(rollResult);
+        _mouseBehaviour.SetCanTraverseWalls(_playersIgnoreWalls[_currentPlayerIndex]);
+        _mouseBehaviour.SetStartPos(PlayerManager.Instance.PlayerControllers[_currentPlayerIndex].transform.position);
+        _mouseBehaviour.SetCursorInteraction(true);
+        
+    }
+
+    public void AfterOneTileMoved(Vector3 positionToCheck)
+    {
+        if(InteractionManager.Instance.CheckInteractable(positionToCheck))
+        {
+
+        }
+    }
+
+    public void AfterPlayerPathEnded()
+    {
+        _mouseBehaviour.SetCursorInteraction(false);
+        if (_playersDoubleRoll[_currentPlayerIndex])
+        {
+            _playersDoubleRoll[_currentPlayerIndex] = false;
+            PrepareForTurn(false);
+        }
+        else
+        {
+            PrepareForTurn(true);
+        }
+        PlayerManager.Instance.PrepareCurrentPlayer();
+    }
+
+    public void PrepareForTurn(bool ShouldChangePlayer)
+    {
+        if (ShouldChangePlayer)
+        {
+            _playersDoubleRoll[_currentPlayerIndex] = false;
+            _playersIgnoreWalls[_currentPlayerIndex] = false;
+            _playersMax3Move[_currentPlayerIndex] = false;
+            _playersMissTurn[_currentPlayerIndex] = false;
+            ChangePlayerTurn();
+        }
+
+        /// Write some code to prepare next turn
+        if (_playersMissTurn[_currentPlayerIndex])
+        {
+            PrepareForTurn(true);
+            return;
+        }
+
+        _mouseBehaviour.ClearPath();
+
+        OnNewTurnStart.Invoke();
+    }
+}
