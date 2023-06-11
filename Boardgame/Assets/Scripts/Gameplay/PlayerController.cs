@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        OnOneTileMoved.AddListener(LookForEvent);
     }
 
     // Update is called once per frame
@@ -61,5 +61,13 @@ public class PlayerController : MonoBehaviour
     {
         transform.DOKill();
         transform.localScale = Vector3.one;
+    }
+
+    public void LookForEvent()
+    {
+        if (EventsGenerator.CheckForEvent(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)))
+        {
+            Debug.Log("Player stepped on an Event!");
+        }
     }
 }
