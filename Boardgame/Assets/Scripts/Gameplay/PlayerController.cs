@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
 {
 
     bool _isPaused = true;
+    public int pickedKeys;
 
     public UnityEvent OnOneTileMoved;
 
@@ -16,6 +17,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         OnOneTileMoved.AddListener(LookForEvent);
+        OnOneTileMoved.AddListener(LookForKey);
     }
 
     // Update is called once per frame
@@ -68,6 +70,14 @@ public class PlayerController : MonoBehaviour
         if (EventsGenerator.CheckForEvent(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)))
         {
             Debug.Log("Player stepped on an Event!");
+        }
+    }
+    public void LookForKey()
+    {
+        if (KeysManager.Instance.key.transform.position == transform.position)
+        {
+            Debug.Log("Player stepped on KEY!");
+            KeysManager.Instance.OnKeyPicked?.Invoke();
         }
     }
 }

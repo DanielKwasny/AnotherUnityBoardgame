@@ -28,6 +28,7 @@ public class GameManager : Singleton<GameManager>
     // Start is called before the first frame update
     void Start()
     {
+        KeysManager.Instance.OnKeyPicked.AddListener(PlayerPickKey);
         PlayerManager.Instance.OnOneTileMovedEvent.AddListener(AfterOneTileMoved);
         PlayerManager.Instance.OnPathEndedEvent.AddListener(AfterPlayerPathEnded);
         _mouseBehaviour.SetStartPos(PlayerManager.Instance.PlayerControllers[0].transform.position);
@@ -114,5 +115,14 @@ public class GameManager : Singleton<GameManager>
         _mouseBehaviour.ClearPath();
 
         OnNewTurnStart.Invoke();
+    }
+
+    public void PlayerPickKey()
+    {
+        PlayerManager.Instance.PlayerControllers[_currentPlayerIndex].pickedKeys++;
+        if (PlayerManager.Instance.PlayerControllers[_currentPlayerIndex].pickedKeys == 4)
+        {
+            Debug.Log("The winner is Player"+_currentPlayerIndex+1);
+        }
     }
 }
