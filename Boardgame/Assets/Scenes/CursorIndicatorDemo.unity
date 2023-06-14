@@ -292,7 +292,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   keySpawnPoint:
-  - {x: 1, y: -5}
+  - {x: 1, y: -2}
   key: {fileID: 1031070180}
 --- !u!4 &207055613
 Transform:
@@ -1106,11 +1106,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1631644774931741050, guid: cd6ef439d3e6e4c4ba14d72d3ed21081, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -7.0761905
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1631644774931741050, guid: cd6ef439d3e6e4c4ba14d72d3ed21081, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -5.762327
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 1631644774931741050, guid: cd6ef439d3e6e4c4ba14d72d3ed21081, type: 3}
       propertyPath: m_LocalPosition.z

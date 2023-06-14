@@ -23,6 +23,7 @@ public class KeysManager : Singleton<KeysManager>
         }
 
         int randomSpawnPoint = Random.Range(0, keySpawnPoint.Count);
+        EventsGenerator.SetPositionState((int)keySpawnPoint[randomSpawnPoint].x, (int)keySpawnPoint[randomSpawnPoint].y, true);
         key.transform.SetPositionAndRotation(keySpawnPoint[randomSpawnPoint], Quaternion.identity);
         keySpawnPoint.RemoveAt(randomSpawnPoint);
     }
