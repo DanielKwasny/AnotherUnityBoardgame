@@ -18,6 +18,8 @@ public class GameManager : Singleton<GameManager>
 
     bool[] _playersMissTurn = new bool[2] { false, false };
 
+    bool[] _playerBackToStartingPosition = new bool[2] { false, false };
+
     public UnityEvent<int> OnRolledDice;
 
     public UnityEvent OnActivateRoute;
@@ -55,7 +57,16 @@ public class GameManager : Singleton<GameManager>
 
         PlayerManager.Instance.SetPathForCurrentPlayer(routeToMove);
         OnActivateRoute.Invoke();
-    } 
+    }
+    
+    public void MoveActivePlayerOnRouteBackwards()
+    {
+        List<Vector3> routeToMove = _mouseBehaviour.FieldsCurrentlySelectedReversed;
+        if (routeToMove.Count == 0) return;
+
+        PlayerManager.Instance.SetPathForCurrentPlayer(routeToMove);
+        OnActivateRoute.Invoke();
+    }
 
     public void RollDice()
     {
@@ -82,10 +93,16 @@ public class GameManager : Singleton<GameManager>
     public void AfterPlayerPathEnded()
     {
         _mouseBehaviour.SetCursorInteraction(false);
+        EventsManager.Instance.CheckIfAnyEventsToInvoke();
         if (_playersDoubleRoll[_currentPlayerIndex])
         {
             _playersDoubleRoll[_currentPlayerIndex] = false;
             PrepareForTurn(false);
+        }
+        else if(_playerBackToStartingPosition[_currentPlayerIndex])
+        {
+            MoveActivePlayerOnRouteBackwards();
+            PrepareForTurn(true);
         }
         else
         {
@@ -102,6 +119,7 @@ public class GameManager : Singleton<GameManager>
             _playersIgnoreWalls[_currentPlayerIndex] = false;
             _playersMax3Move[_currentPlayerIndex] = false;
             _playersMissTurn[_currentPlayerIndex] = false;
+            _playerBackToStartingPosition[_currentPlayerIndex] = false;
             ChangePlayerTurn();
         }
 
@@ -124,5 +142,41 @@ public class GameManager : Singleton<GameManager>
         {
             Debug.Log("The winner is Player"+_currentPlayerIndex+1);
         }
+    }
+
+    public void EnableIgnoringWalls()
+    {
+        _playersIgnoreWalls[_currentPlayerIndex] = true;
+        Debug.Log("Enabled ignoring walls for player: " + _currentPlayerIndex);
+    }
+
+    public void EnableDoubleRoll()
+    {
+        _playersIgnoreWalls[_currentPlayerIndex] = true;
+        Debug.Log("Enabled double roll for player: " + _currentPlayerIndex);
+    }
+
+    public void EnablePlayerMax3TileMovement()
+    {
+        _playersMax3Move[_currentPlayerIndex] = true;
+        Debug.Log("Enabled max 3 tile movement for player: " + _currentPlayerIndex);
+    }
+
+    public void EnablePlayerMissTurn()
+    {
+        _playersMissTurn[_currentPlayerIndex == 0 ? 1 : 0] = true;
+        Debug.Log("Enabled missing turn for player: " + _currentPlayerIndex);
+    }
+
+    public void EnableBackToStart()
+    {
+        _playerBackToStartingPosition[_currentPlayerIndex] = true;
+        Debug.Log("Enabled back to start for player: " + _currentPlayerIndex);
+    }
+
+    public void EnableNextPlayerMax3TileMovement()
+    {
+        _playersMax3Move[_currentPlayerIndex == 0 ? 1 : 0] = true;
+        Debug.Log("Enabled max 3 tile movement for player: " + (_currentPlayerIndex == 0 ? 1 : 0));
     }
 }

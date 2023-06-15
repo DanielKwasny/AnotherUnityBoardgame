@@ -16,8 +16,11 @@ public class MouseBehaviour : MonoBehaviour
 
     [SerializeField]
     List<Vector3> _fieldsCurrentlySelected = new List<Vector3>();
+    List<Vector3> _reversedPath = new List<Vector3>();
 
     public List<Vector3> FieldsCurrentlySelected => _fieldsCurrentlySelected;
+
+    public List<Vector3> FieldsCurrentlySelectedReversed => _reversedPath;
 
     bool _isCursorActive = false;
 
@@ -91,11 +94,12 @@ public class MouseBehaviour : MonoBehaviour
             GameObject go = _objectPool.Instantiate(clampedWorldPos);
             _lastPositionCalculated = go.transform.position;
             _fieldsCurrentlySelected.Add(clampedWorldPos);
+            _reversedPath.Add(clampedWorldPos);
             go.GetComponent<CursorTile>().SetNumber(_fieldsCurrentlySelected.Count);
         }
         else if(Input.GetMouseButtonUp(0))
         {
-            
+            _reversedPath.Reverse();
         }
     }
 
@@ -121,10 +125,16 @@ public class MouseBehaviour : MonoBehaviour
         _objectPool.DestroyAll();
         _lastPositionCalculated = Vector3.one * float.PositiveInfinity;
         _fieldsCurrentlySelected.Clear();
+        _reversedPath.Clear();
     }
 
     public void SetStartPos(Vector3 startPos)
     {
         _startPos = startPos;
+    }
+
+    public Vector3 GetStartPos()
+    {
+        return _startPos;
     }
 }

@@ -1,65 +1,33 @@
 using UnityEngine;
 
-public class Event : MonoBehaviour, IEvent
+public class Event : IEvent
 {
 
-    public void ChooseRandomEvent()
+    public void ChooseEvent()
     {
-        int _eventType = 0;
+        int _randomValue = Random.Range(1, 7);
 
-        _eventType = Random.Range(1, 7);
-
-        switch (_eventType)
+        switch (_randomValue)
         {
             case 1:
-                AllowMovementThroughWalls();
+                GameManager.Instance.EnableIgnoringWalls();
                 break;
             case 2:
-                LostNextMove();
+                GameManager.Instance.EnablePlayerMissTurn();
                 break;
             case 3:
-                AdditionalDiceRoll();
+                GameManager.Instance.EnableDoubleRoll();
                 break;
             case 4:
-                BackToLastTile();
+                GameManager.Instance.EnableBackToStart();
                 break;
             case 5:
-                LimitEnemyMoveTo3();
+                GameManager.Instance.EnableNextPlayerMax3TileMovement();
                 break;
             case 6:
-                CurrentPlayerMoveLimitTo3();
+                GameManager.Instance.EnablePlayerMax3TileMovement();
                 break;
         }
 
     }
-
-    public void AllowMovementThroughWalls()
-    {
-
-    }
-
-    public void LostNextMove()
-    {
-
-    }
-
-    public void AdditionalDiceRoll()
-    {
-
-    }
-
-    public void BackToLastTile()
-    {
-
-    }
-
-    public void LimitEnemyMoveTo3()
-    {
-
-    }
-
-    public void CurrentPlayerMoveLimitTo3()
-    {
-
-    }
-}
+   }

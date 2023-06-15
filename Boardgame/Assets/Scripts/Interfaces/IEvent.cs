@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IEvent
 {
-    public void ChooseRandomEvent();
+    public void ChooseEvent();
 }

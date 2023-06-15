@@ -58,11 +58,12 @@ public class EventsGenerator : MonoBehaviour
                 _mapFields[calcX, calcY] = false;
                 eventWithPosition[new Vector2(xPos, yPos)].SetActive(false);
                 eventWithPosition.Remove(new Vector2(xPos, yPos));
-                PlayerManager.Instance.GetCurrentPlayerController().SetPause(true);
+                //PlayerManager.Instance.GetCurrentPlayerController().SetPause(true);
+                return true;
             }
         };
 
-        return true;
+        return false;
     }
 
     public static void SetPositionState(int X, int Y, bool state)

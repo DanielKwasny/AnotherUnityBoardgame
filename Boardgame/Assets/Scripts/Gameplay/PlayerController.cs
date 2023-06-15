@@ -70,6 +70,7 @@ public class PlayerController : MonoBehaviour
         if (EventsGenerator.CheckForEvent(Mathf.RoundToInt(transform.position.x), Mathf.RoundToInt(transform.position.y)))
         {
             Debug.Log("Player stepped on an Event!");
+            EventsManager.Instance.AddEventToQueue();
         }
     }
     public void LookForKey()

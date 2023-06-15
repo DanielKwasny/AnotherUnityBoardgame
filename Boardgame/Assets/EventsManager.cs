@@ -2,17 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EventsManager : MonoBehaviour
+public class EventsManager : Singleton<EventsManager>
 {
-    // Start is called before the first frame update
-    void Start()
+    static List<Event> eventQueue = new();
+
+    private void Start()
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public void AddEventToQueue()
     {
-        
+        eventQueue.Add(new Event());
+    }
+
+    public void CheckIfAnyEventsToInvoke()
+    {
+        if(eventQueue.Count != 0)
+        {
+            InvokeEventQueue();
+        }
+    }
+
+    void InvokeEventQueue()
+    {
+        if (eventQueue.Count != 0)
+        {
+            foreach (Event e in eventQueue)
+            {
+                e.ChooseEvent();
+            }
+            eventQueue.Clear();
+        }
     }
 }
